@@ -1,4 +1,5 @@
 videos/
+.vscode/ipch/
 
 # Prerequisites
 *.d
