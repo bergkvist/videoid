@@ -1,5 +1,5 @@
 CC := g++
-CFLAGS := -g -Wall
+CFLAGS := -g -Wall -I/usr/include/opencv4
 TARGET := bin/main.exe
 
 all: $(TARGET)
