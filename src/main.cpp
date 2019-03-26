@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <opencv2/opencv.hpp>
+#include "stopwatch.hpp"
 
 #define HASH_SIZE 64
 #define HASH_LENGTH HASH_SIZE * HASH_SIZE / 8
@@ -10,7 +11,7 @@ unsigned int countSetBits(unsigned char n) {
     while (n) {
         count += n & 1; 
         n >>= 1;
-    } 
+    }
     return count; 
 }
 
@@ -62,10 +63,14 @@ std::vector<PHashFrame> hashVideo(std::string filename) {
 
 int main (int argc, char** argv) {
     std::cout << "OpenCV version: " << CV_VERSION << std::endl;
+    stopwatch t1, t2;
 
+    t1.start();
     std::vector<PHashFrame> v1 = hashVideo("./videos/M_KWGJw6R24.mp4");
     std::vector<PHashFrame> v2 = hashVideo("./videos/ZTHsrEG5jhA.mp4");
+    t1.stop();
 
+    t2.start();
     int i = 0;
     for (PHashFrame h1 : v1) {
         
@@ -75,9 +80,17 @@ int main (int argc, char** argv) {
             if (hamm < minHamm) minHamm = hamm;
         }
 
-        if (++i % 32 == 0) std::cout << std::endl;
-        std::cout << std::setw(4) << minHamm << " ";
+        //if (++i % 32 == 0) std::cout << std::endl;
+        //std::cout << std::setw(4) << minHamm << " ";
     }
+    t2.stop();
+
+    std::cout 
+        << "\n\n Elapsed time:\n  hash: " 
+        << t1.elapsedTime() 
+        << " s\n  comp: "
+        << t2.elapsedTime()
+        << " s\n";
 
     return 0;
 }

@@ -1,15 +1,16 @@
 CC := g++
 CFLAGS := -g -Wall $(shell pkg-config opencv4 --cflags) -O3
 LIBS := $(shell pkg-config opencv4 --libs)
+OBJECTS := $(patsubst src/%.cpp, build/%.o, $(wildcard src/*.cpp))
 TARGET := bin/main.exe
 YTVIDS := M_KWGJw6R24 ZTHsrEG5jhA
 
 all: $(TARGET)
 
-$(TARGET): build/main.o
-	mkdir -p ./bin/ && $(CC) $^ -o $(TARGET) $(LIBS)
+$(TARGET): $(OBJECTS)
+	mkdir -p ./bin/ && $(CC) -o $(TARGET) $(LIBS) $(OBJECTS)
 
-build/main.o: src/main.cpp
+build/%.o: src/%.cpp
 	mkdir -p ./build/ && $(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
