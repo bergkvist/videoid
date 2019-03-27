@@ -74,7 +74,7 @@ int main (int argc, char** argv) {
     t1.stop();
 
     t2.start();
-    int i = 0;
+    //int i = 0;
     for (PHashFrame h1 : v1) {
         size_t minHamm = h1.hammingDistance(v2[0]);
         for (PHashFrame h2 : v2) {

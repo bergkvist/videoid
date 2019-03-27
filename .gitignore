@@ -6,6 +6,9 @@ images/
 !.vscode/launch.json
 !.vscode/extensions.json
 
+# Documentation
+*.pdf
+
 # Prerequisites
 *.d
 
