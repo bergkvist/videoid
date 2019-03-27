@@ -3,20 +3,27 @@
 #include <opencv2/opencv.hpp>
 #include "stopwatch.hpp"
 
+#define BITS_IN_UINT 32
 #define HASH_SIZE 64
-#define HASH_LENGTH HASH_SIZE * HASH_SIZE / 8
+#define HASH_LENGTH HASH_SIZE * HASH_SIZE / BITS_IN_UINT
 
-unsigned int countSetBits(unsigned char n) { 
+unsigned int countSetBits(unsigned int n) { 
     unsigned int count = 0;
     while (n) {
         count += n & 1; 
         n >>= 1;
     }
-    return count; 
+    return count;
+}
+
+int SWAR(unsigned int i) {
+    i = i - ((i >> 1) & 0x55555555);
+    i = (i & 0x33333333) + ((i >> 2) & 0x33333333);
+    return (((i + (i >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;
 }
 
 struct PHashFrame {
-    unsigned char data[HASH_LENGTH];
+    unsigned int data[HASH_LENGTH];
 
     PHashFrame(cv::Mat frame) {
         cv::Size s(HASH_SIZE, HASH_SIZE);
@@ -25,25 +32,21 @@ struct PHashFrame {
 
         long int threshold = 0;
 
-        for (size_t i = 0; i < 8 * HASH_LENGTH; ++i)
+        for (size_t i = 0; i < BITS_IN_UINT * HASH_LENGTH; ++i)
             threshold += (long int) frame.data[i];
-        threshold /= (8 * HASH_LENGTH);
+        threshold /= (BITS_IN_UINT * HASH_LENGTH);
 
-        for (size_t i = 0; i < HASH_LENGTH; ++i) this->data[i] =
-            ((frame.data[8*i + 0] > threshold) ? 0b00000001 : 0b00000000) |
-            ((frame.data[8*i + 1] > threshold) ? 0b00000010 : 0b00000000) |
-            ((frame.data[8*i + 2] > threshold) ? 0b00000100 : 0b00000000) |
-            ((frame.data[8*i + 3] > threshold) ? 0b00001000 : 0b00000000) |
-            ((frame.data[8*i + 4] > threshold) ? 0b00010000 : 0b00000000) |
-            ((frame.data[8*i + 5] > threshold) ? 0b00100000 : 0b00000000) |
-            ((frame.data[8*i + 6] > threshold) ? 0b01000000 : 0b00000000) |
-            ((frame.data[8*i + 7] > threshold) ? 0b10000000 : 0b00000000);        
+        for (size_t i = 0; i < HASH_LENGTH; ++i) {
+            this->data[i] = 0;
+            for (size_t j = 0; j < BITS_IN_UINT; ++j)
+                this->data[i] |= (frame.data[BITS_IN_UINT*i + j] > threshold) ? (1<<j) : 0;
+        }    
     }
 
     size_t hammingDistance(const PHashFrame &h) {
         size_t count = 0;
         for (size_t i = 0; i < HASH_LENGTH; ++i) {
-            count += countSetBits(this->data[i] ^ h.data[i]);
+            count += SWAR(this->data[i] ^ h.data[i]);
         }
         return count;
     }
@@ -73,13 +76,11 @@ int main (int argc, char** argv) {
     t2.start();
     int i = 0;
     for (PHashFrame h1 : v1) {
-        
         size_t minHamm = h1.hammingDistance(v2[0]);
         for (PHashFrame h2 : v2) {
             size_t hamm = h1.hammingDistance(h2);
             if (hamm < minHamm) minHamm = hamm;
         }
-
         //if (++i % 32 == 0) std::cout << std::endl;
         //std::cout << std::setw(4) << minHamm << " ";
     }
