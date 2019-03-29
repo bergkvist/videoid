@@ -3,7 +3,11 @@
 #include <stdio.h>
 
 #ifndef HASH_SIZE
-    #define HASH_SIZE 32
+#define HASH_SIZE 32
+#endif
+
+#ifndef WINDOW_SIZE
+#define WINDOW_SIZE 180
 #endif
 
 #define BITS_IN_UINT 32

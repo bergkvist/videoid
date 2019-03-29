@@ -1,9 +1,17 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <stdlib.h>
 #include <opencv2/opencv.hpp>
+
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
+
 #include "stopwatch.hpp"
 #include "config.h"
+
+#define VERBOSE getenv("VERBOSE")
 
 // Count the number of set bits in the integer i
 int SWAR(unsigned int i) {
@@ -39,6 +47,13 @@ std::vector<double> rollingStd(std::vector<double> data, size_t windowSize) {
         result[i] = std::sqrt(result[i]);
     }
     return result;
+}
+
+std::string videoFolder() {
+    std::string homeDir = getenv("HOME")
+        ? getenv("HOME") 
+        : getpwuid(getuid())->pw_dir;
+    return homeDir + "/.videos";
 }
 
 struct HashedFrame {
@@ -80,13 +95,29 @@ struct HashedVideo {
     std::vector<HashedFrame> frames;
 
     HashedVideo(std::string videoid) {
-        cv::VideoCapture cap("./videos/" + videoid + ".mp4");
-        cv::Mat frame;
-        this->framerate = cap.get(cv::CAP_PROP_FPS);
         this->videoid = videoid;
-        while (cap.read(frame)) {
-            HashedFrame hash(frame);
-            this->frames.push_back(hash);
+        const std::string vf = videoFolder();
+        std::ifstream binExists(vf + "/" + this->videoid + ".asset");
+        std::ifstream mp4Exists(vf + "/" + this->videoid + ".mp4"); 
+        if (!binExists) {
+            if(!mp4Exists) {
+                const std::string command("youtube-dl -f 'bestvideo[height<=144][ext=mp4]' -o '" + vf + "/%(id)s.%(ext)s' " + this->videoid);
+                if(VERBOSE)
+                std::cout << command << "\n";
+                std::system(command.c_str());
+            }
+            cv::VideoCapture cap(vf + "/" + videoid + ".mp4");
+            cv::Mat frame;
+            this->framerate = cap.get(cv::CAP_PROP_FPS);
+            this->videoid = videoid;
+            while (cap.read(frame)) {
+                HashedFrame hash(frame);
+                this->frames.push_back(hash);
+            }
+
+            //const float f = 3.14f;
+            //std::ofstream ofile(vf+"/"+this->videoid+"/.asset", std::ios::binary);
+            //ofile.write((char*) &f, sizeof(float));
         }
     }
 };
@@ -96,6 +127,9 @@ struct VideoComparison {
     std::string assetId;
     std::string compilationId;
     std::vector<double> data;
+    std::vector<double> rAvg;
+    std::vector<double> rStd;
+    std::vector<int> c;
 
     VideoComparison(const HashedVideo &asset, const HashedVideo &compilation) {
         const double factor = 1.0 / (HASH_SIZE * HASH_SIZE);
@@ -111,49 +145,54 @@ struct VideoComparison {
             }
             this->data.push_back(1 - factor * minDist);
         }
+
+        this->rAvg = rollingAvg(this->data, WINDOW_SIZE);
+        this->rStd = rollingStd(this->data, WINDOW_SIZE);
     }
 
     void classify() {
-        std::vector<double> a = rollingAvg(this->data, 120);
-        std::vector<double> s = rollingStd(this->data, 120);
-        std::vector<int> c(a.size());
-
-        for (size_t i = 0; i < a.size(); ++i) {
-            if (a[i] > 0.8 && s[i] < 0.05) {
-                const int match = i / this->framerate + 1;
-                std::cout << "\nMatch found: https://youtu.be/" << this->compilationId << "?t=" << match << "s\n";
-                break;
+        std::cout << "asset: " << this->assetId << " | compilation: "<< this->compilationId << " => ";
+        for (size_t i = 0; i < this->rAvg.size(); ++i) {
+            if (this->rAvg[i] > 0.9 && this->rStd[i] < 0.05) {
+                const int match = (i + 60) / this->framerate;
+                std::cout << "Match found: https://youtu.be/" << this->compilationId << "?t=" << match << "s\n";
+                return;
             }
         }
+        std::cout << "No matches found!\n";
     }
 };
 
 int main (int argc, char** argv) {
-    std::cout << "OpenCV version: " << CV_VERSION << std::endl;
-    std::cout << "HASH_SIZE=" << HASH_SIZE << " (output file: " << OUTPUT << ")" << std::endl;
+    videoFolder();
+    if (argc != 3) {
+        std::cout << "Usage: compare-videos [asset id] [compilation id]";
+        return -1;
+    }
+    if(VERBOSE) {
+        std::cout << "OpenCV version: " << CV_VERSION << std::endl;
+        std::cout << "HASH_SIZE=" << HASH_SIZE << " (output file: " << OUTPUT << ")" << std::endl;
+    }
     std::ofstream csv(OUTPUT);
     stopwatch t1, t2, t3;
 
     t1.start();
-    HashedVideo v1("ZTHsrEG5jhA"); // asset
-    HashedVideo v2("M_KWGJw6R24"); // compilation
+    HashedVideo v1(argv[1]); // asset
+    HashedVideo v2(argv[2]); // compilation
     t1.stop();
-
-    std::cout 
-        << "\nVideos hashed:\n v1: " 
-        << v1.framerate << " fps\n v2: " 
-        << v2.framerate << " fps\n";
 
     t2.start();
     VideoComparison c(v1, v2);
-    csv << "x\n"; for (double d : c.data) csv << d << std::endl;
+    csv << "avg,std\n"; 
+    for (size_t i = 0; i < c.rAvg.size(); ++i)
+        csv << c.rAvg[i] << "," << c.rStd[i] << "\n";
     t2.stop();
 
     t3.start();
     c.classify();
     t3.stop();
 
-    std::cout 
+    if(VERBOSE) std::cout 
         << "\nElapsed time:\n hash: " 
         << t1.elapsedTime() 
         << " s\n comp: "
