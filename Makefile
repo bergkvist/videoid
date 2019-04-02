@@ -7,7 +7,7 @@ TARGET := bin/main.exe
 
 all: $(TARGET)
 
-$(TARGET): $(OBJECTS) src/config.h
+$(TARGET): $(OBJECTS)
 	mkdir -p ./bin/ && $(CC) -o $(TARGET) $(LIBS) $(OBJECTS)
 
 build/%.o: src/%.cpp
@@ -20,7 +20,7 @@ download-videos:
 	youtube-dl -f 'bestvideo[height<=144][ext=mp4]' -o './videos/%(id)s.%(ext)s' $(YTVIDS)
 
 run: $(TARGET)
-	./$(TARGET) ZTHsrEG5jhA 9RlBXx8Pf-8
+	./$(TARGET) ZTHsrEG5jhA M_KWGJw6R24
 
 run-watch: $(TARGET)
 	echo "src/main.cpp" | entr -c -s 'make run && make plot'

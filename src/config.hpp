@@ -2,6 +2,8 @@
 #include <string> 
 #include <stdio.h>
 
+#define VERBOSE getenv("VERBOSE")
+
 #ifndef HASH_SIZE
 #define HASH_SIZE 32
 #endif

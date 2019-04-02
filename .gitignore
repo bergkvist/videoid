@@ -1,5 +1,7 @@
 videos/
 images/
+!images/plot.py
+
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
