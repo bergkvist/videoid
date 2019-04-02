@@ -1,12 +1,5 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from matplotlib import cm
-import scipy.signal
-import numpy as np
-
-WINDOW_SIZE = 120
-BOTTOM = 0.4
-TOP = 1
 
 plt.style.use('seaborn')
 plt.figure(figsize=(10,8))
@@ -24,7 +17,5 @@ plt.plot(2*df['max_std'], 'g', alpha=0.6)
 plt.fill_between(df.index, 2*df['std'], color='b', alpha=.25)
 plt.fill_between(df.index, df['min_avg'], 1, alpha=0.25, color='g')
 plt.fill_between(df.index, 0, 2*df['max_std'], alpha=0.25, color='g')
-
-print(df['min_avg'])
 
 plt.savefig('images/out32.png')
