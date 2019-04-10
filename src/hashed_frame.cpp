@@ -3,7 +3,7 @@
 
 namespace {
     // Count the number of set bits in the integer i
-    int SWAR(unsigned int i) {
+    inline int number_of_set_bits(unsigned int i) {
         /* Together with compiler flag -O3, this function offers a massive speed improvement */
         i = i - ((i >> 1) & 0x55555555);
         i = (i & 0x33333333) + ((i >> 2) & 0x33333333);
@@ -11,10 +11,10 @@ namespace {
     }
 }
 
-int ContentID::HashedFrame::hammingDistance(const HashedFrame &h) {
+int ContentID::HashedFrame::hamming_distance(const HashedFrame &h) {
     int count = 0;
     for (size_t i = 0; i < HASH_LENGTH; ++i) {
-        count += ::SWAR(this->data[i] ^ h.data[i]);
+        count += ::number_of_set_bits(this->data[i] ^ h.data[i]);
     }
     return count;
 }

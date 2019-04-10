@@ -6,5 +6,5 @@ class stopwatch {
 public:
 	void start();
 	void stop(); 
-	double elapsedTime();
+	double elapsed_time();
 };

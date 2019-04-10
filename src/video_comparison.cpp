@@ -3,38 +3,43 @@
 #include <math.h>
 
 namespace {
-    std::vector<double> rollingAvg(const std::vector<double> &data, const size_t windowSize) {
-        const size_t outputSize = data.size() - windowSize;
-        std::vector<double> result(outputSize);
-        for (size_t i = 0; i < outputSize; ++i) {
+    std::vector<double> rolling_avg(const std::vector<double> &data, const size_t window_size) {
+        const size_t output_size = data.size() - window_size;
+        std::vector<double> result(output_size);
+        for (size_t i = 0; i < output_size; ++i) {
             result[i] = 0;
-            for (size_t j = 0; j < windowSize; ++j) {
+            for (size_t j = 0; j < window_size; ++j) {
                 result[i] += data[i+j];
             }
-            result[i] /= windowSize;
+            result[i] /= window_size;
         }
         return result;
     }
 
-    std::vector<double> rollingStd(const std::vector<double> &data, const size_t windowSize) {
-        const size_t outputSize = data.size() - windowSize;
-        std::vector<double> result(outputSize);
-        std::vector<double> avg = rollingAvg(data, windowSize);
-        for (size_t i = 0; i < outputSize; ++i) {
+    std::vector<double> rolling_std(const std::vector<double> &data, const size_t window_size) {
+        const size_t output_size = data.size() - window_size;
+        std::vector<double> result(output_size);
+        std::vector<double> avg = rolling_avg(data, window_size);
+        for (size_t i = 0; i < output_size; ++i) {
             result[i] = 0;
-            for (size_t j = 0; j < windowSize; ++j) {
+            for (size_t j = 0; j < window_size; ++j) {
                 result[i] += std::pow(data[i+j] - avg[i], 2);
             }
-            result[i] /= windowSize;
+            result[i] /= window_size;
             result[i] = std::sqrt(result[i]);
         }
         return result;
     }
 
-    std::vector<bool> findMatches(const std::vector<double> &avg, const std::vector<double> &std) {
+    std::vector<bool> find_matches(
+        const std::vector<double> &avg, 
+        const std::vector<double> &std, 
+        const double min_avg, 
+        const double max_std
+    ) {
         std::vector<bool> result(avg.size());
         for (size_t i = 0; i < avg.size(); ++i) {
-            if (avg[i] > 0.9 && std[i] < 0.1) result[i] = true;
+            if (avg[i] > min_avg && std[i] < max_std) result[i] = true;
             else result[i] = false;
         }
         return result;
@@ -46,30 +51,37 @@ namespace {
 ContentID::VideoComparison::VideoComparison(
     const ContentID::HashedVideo &asset, 
     const ContentID::HashedVideo &compilation
-) {
-    const double factor = 1.0 / (HASH_SIZE * HASH_SIZE);
-    this->framerate = compilation.framerate;
-    this->assetId = asset.videoid;
-    this->compilationId = compilation.videoid;
+) 
+  : framerate{ compilation.framerate }, 
+    asset_id{ asset.videoid },
+    compilation_id{ compilation.videoid },
+    signal{ 0.8875 /*min avg*/, 0.07 /*max std*/ }
+{
+    constexpr double factor = 1.0 / (HASH_SIZE * HASH_SIZE);
 
-    for (auto compilationFrame : compilation.frames) {
-        int minDist = compilationFrame.hammingDistance(asset.frames[0]);
-        for (auto assetFrame : asset.frames) {
-            int dist = compilationFrame.hammingDistance(assetFrame);
-            if (dist < minDist) minDist = dist;
+    for (auto compilation_frame : compilation.frames) {
+        int min_dist = compilation_frame.hamming_distance(asset.frames[0]);
+        for (auto asset_frame : asset.frames) {
+            int dist = compilation_frame.hamming_distance(asset_frame);
+            if (dist < min_dist) min_dist = dist;
         }
-        this->signal.raw.push_back(1 - factor * minDist);
+        this->signal.raw.push_back(1 - factor * min_dist);
     }
 
-    this->signal.movingAvg = ::rollingAvg(this->signal.raw, WINDOW_SIZE);
-    this->signal.movingStd = ::rollingStd(this->signal.raw, WINDOW_SIZE);
-    this->signal.binary = ::findMatches(this->signal.movingAvg, this->signal.movingStd);
+    this->signal.moving_avg = ::rolling_avg(this->signal.raw, WINDOW_SIZE);
+    this->signal.moving_std = ::rolling_std(this->signal.raw, WINDOW_SIZE);
+    this->signal.binary = ::find_matches(
+        this->signal.moving_avg, 
+        this->signal.moving_std, 
+        this->signal.min_avg, 
+        this->signal.max_std
+    );
 
-    std::cout << "asset: " << this->assetId << " | compilation: "<< this->compilationId << " => ";
+    std::cout << "asset: " << this->asset_id << " | compilation: "<< this->compilation_id << " => ";
     for (size_t i = 0; i < this->signal.binary.size(); ++i) {
         if (this->signal.binary[i]) {
             const double seconds = (i + 60) / this->framerate;
-            std::cout << "Match found: https://youtu.be/" << this->compilationId << "?t=" << seconds << "s\n";
+            std::cout << "Match found: https://youtu.be/" << this->compilation_id << "?t=" << seconds << "s\n";
             return;
         }
     }

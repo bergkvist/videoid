@@ -9,6 +9,6 @@ namespace ContentID {
         
         public:
             HashedFrame(cv::Mat frame);
-            int hammingDistance(const ContentID::HashedFrame &h);
+            int hamming_distance(const ContentID::HashedFrame &h);
     };
 }
