@@ -12,9 +12,8 @@ namespace {
         return home_directory + "/.videos";
     }
 
-    bool file_exists(const std::string &path) {
-        std::ifstream exists{path};
-        return (bool) exists;
+    inline bool file_exists(const std::string &path) {
+        return (std::ifstream{path}).is_open();
     }
 
     void download_video(const std::string &directory, const std::string &videoid) {

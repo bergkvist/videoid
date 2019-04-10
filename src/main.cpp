@@ -22,18 +22,18 @@ int main (int argc, char** argv) {
     t1.stop();
 
     t2.start();
-    ContentID::VideoComparison c{asset_video, compilation_video};
+    ContentID::VideoComparison comparison{asset_video, compilation_video};
     csv << "raw,avg,std,bin,min_avg,max_std\n"; 
-    for (size_t i = 0; i < c.signal.raw.size(); ++i) {
-        csv << c.signal.raw[i];
-        if (i > WINDOW_SIZE/2 && i < c.signal.raw.size() - WINDOW_SIZE/2) {
-            csv << "," << c.signal.moving_avg[i-WINDOW_SIZE/2]
-                << "," << c.signal.moving_std[i-WINDOW_SIZE/2]
-                << "," << c.signal.binary[i-WINDOW_SIZE/2];
-        }else {
+    for (size_t i = 0; i < comparison.signal.raw.size(); ++i) {
+        csv << comparison.signal.raw[i];
+        if (i > WINDOW_SIZE/2 && i < comparison.signal.raw.size() - WINDOW_SIZE/2) {
+            csv << "," << comparison.signal.moving_avg[i-WINDOW_SIZE/2]
+                << "," << comparison.signal.moving_std[i-WINDOW_SIZE/2]
+                << "," << comparison.signal.binary[i-WINDOW_SIZE/2];
+        } else {
             csv << ",,,";
         }
-        csv << "," << c.signal.min_avg << "," << c.signal.max_std << "\n";
+        csv << "," << comparison.signal.min_avg << "," << comparison.signal.max_std << "\n";
     }
     t2.stop();
 
