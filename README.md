@@ -8,5 +8,5 @@ Video comparison using perceptual hashing in C++
 
 ### Downloading videos
 ```zsh
-$ youtube-dl --id -f 'bestvideo[height<=144][ext=mp4]' [YOUTUBE_ID]
+$ youtube-dl --id -f 'bestvideo[height<=144][ext=mp4]' <YOUTUBE_ID>
 ```
