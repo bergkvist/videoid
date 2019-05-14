@@ -21,8 +21,8 @@ int ContentID::HashedFrame::hamming_distance(const HashedFrame &h) {
 
 ContentID::HashedFrame::HashedFrame(cv::Mat frame) {
     /* Benchmark (usage): 0.953 s */
-    cv::Size s(HASH_SIZE, HASH_SIZE);
-    cv::resize(frame, frame, s);
+    const cv::Size hash_size(HASH_SIZE, HASH_SIZE);
+    cv::resize(frame, frame, hash_size);
     cv::cvtColor(frame, frame, cv::COLOR_RGB2GRAY);
 
     /* Benchmark (usage): 0.016 s */
