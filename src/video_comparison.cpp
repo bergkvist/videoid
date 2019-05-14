@@ -65,33 +65,6 @@ namespace {
     }
 }
 
-ContentID::VideoComparison::VideoComparison(
-    const ContentID::HashedVideo &asset, 
-    const ContentID::HashedVideo &compilation
-) 
-  : framerate{ compilation.framerate }, 
-    asset_id{ asset.videoid },
-    compilation_id{ compilation.videoid },
-    signal{ 0.8875 /*min avg*/, 0.07 /*max std*/ },
-    match{ false /*found*/, 0 /*frame*/ }
-{
-    constexpr double factor = 1.0 / (HASH_SIZE * HASH_SIZE);
-
-    for (auto compilation_frame : compilation.frames) {
-        int min_dist = compilation_frame.hamming_distance(asset.frames[0]);
-        for (auto asset_frame : asset.frames) {
-            int dist = compilation_frame.hamming_distance(asset_frame);
-            if (dist < min_dist) min_dist = dist;
-        }
-        this->signal.raw.push_back(1 - factor * min_dist);
-    }
-    
-    this->signal.moving_avg = ::rolling_avg(this->signal.raw, WINDOW_SIZE);
-    this->signal.moving_std = ::rolling_std(this->signal.raw, WINDOW_SIZE);
-    this->signal.binary = ::generate_binary_signal(this->signal.moving_avg, this->signal.moving_std, this->signal.min_avg, this->signal.max_std);
-    this->match = ::find_first_match(this->signal.binary, MIN_MATCH_LENGTH / framerate);
-}
-
 void ContentID::VideoComparison::print_results() {
     std::cout << "asset: " << this->asset_id << " | compilation: "<< this->compilation_id << " => ";
     if (this->match.found) {
@@ -116,4 +89,30 @@ void ContentID::VideoComparison::write_csv(std::string output) {
         }
         csv << "," << this->signal.min_avg << "," << this->signal.max_std << "\n";
     }
+}
+
+ContentID::VideoComparison::VideoComparison(
+    const ContentID::HashedVideo &asset, 
+    const ContentID::HashedVideo &compilation
+) 
+  : framerate{ compilation.framerate }, 
+    asset_id{ asset.videoid },
+    compilation_id{ compilation.videoid },
+    signal{ 0.8875 /*min_avg*/, 0.07 /*max_std*/ }
+{
+    constexpr double factor = 1.0 / (HASH_SIZE * HASH_SIZE);
+
+    for (auto compilation_frame : compilation.frames) {
+        int min_dist = compilation_frame.hamming_distance(asset.frames[0]);
+        for (auto asset_frame : asset.frames) {
+            int dist = compilation_frame.hamming_distance(asset_frame);
+            if (dist < min_dist) min_dist = dist;
+        }
+        this->signal.raw.push_back(1 - factor * min_dist);
+    }
+    
+    this->signal.moving_avg = ::rolling_avg(this->signal.raw, WINDOW_SIZE);
+    this->signal.moving_std = ::rolling_std(this->signal.raw, WINDOW_SIZE);
+    this->signal.binary = ::generate_binary_signal(this->signal.moving_avg, this->signal.moving_std, this->signal.min_avg, this->signal.max_std);
+    this->match = ::find_first_match(this->signal.binary, MIN_MATCH_LENGTH / framerate);
 }

@@ -13,7 +13,7 @@ namespace {
 
 int ContentID::HashedFrame::hamming_distance(const HashedFrame &h) {
     int count = 0;
-    for (size_t i = 0; i < HASH_LENGTH; ++i) {
+    for (size_t i = 0; i < DATA_LENGTH; ++i) {
         count += ::number_of_set_bits(this->data[i] ^ h.data[i]);
     }
     return count;
@@ -28,15 +28,16 @@ ContentID::HashedFrame::HashedFrame(cv::Mat frame) {
     /* Benchmark (usage): 0.016 s */
     long int threshold = 0;
 
-    for (size_t i = 0; i < BITS_IN_UINT * HASH_LENGTH; ++i)
+    for (size_t i = 0; i < PIXEL_COUNT; ++i)
         threshold += (long int) frame.data[i];
-    threshold /= (BITS_IN_UINT * HASH_LENGTH);
+    threshold /= PIXEL_COUNT;
 
     /* Benchmark (usage): 0.095 s */
-    for (size_t i = 0; i < HASH_LENGTH; ++i) {
+    // The idea here is that since each pixel turns into one bit, we can fit 32 such values in one uint.
+    for (size_t i = 0; i < DATA_LENGTH; ++i) {
         this->data[i] = 0;
-        for (size_t j = 0; j < BITS_IN_UINT; ++j)
-            this->data[i] |= (frame.data[BITS_IN_UINT*i + j] > threshold) ? (1<<j) : 0;
+        for (size_t j = 0; j < PIXELS_PER_UINT; ++j)
+            this->data[i] |= (frame.data[PIXELS_PER_UINT*i + j] > threshold) ? (1<<j) : 0;
     }
 }
 

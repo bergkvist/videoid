@@ -1,6 +1,7 @@
 CC := g++
-CFLAGS := -g -Wall $(shell pkg-config opencv4 --cflags) -O3 -D HASH_SIZE=32 -D WINDOW_SIZE=120
-LIBS := $(shell pkg-config opencv4 --libs)
+OPENCV := opencv4
+CFLAGS := -g -Wall $(shell pkg-config $(OPENCV) --cflags) -O3 -D HASH_SIZE=32 -D WINDOW_SIZE=120
+LIBS := $(shell pkg-config $(OPENCV) --libs)
 OBJECTS := $(patsubst src/%.cpp, build/%.o, $(wildcard src/*.cpp))
 TARGET := bin/main.exe
 #YTVIDS := M_KWGJw6R24 ZTHsrEG5jhA j4hnIAqyhGE 9RlBXx8Pf-8

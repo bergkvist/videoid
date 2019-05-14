@@ -1,6 +1,7 @@
 videos/
 images/
 !images/plot.py
+!bin/youtube-dl
 
 .vscode/*
 !.vscode/settings.json

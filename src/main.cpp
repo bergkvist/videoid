@@ -14,19 +14,27 @@ int main (int argc, char** argv) {
         std::cout << "OpenCV version: " << CV_VERSION << std::endl;
         std::cout << "HASH_SIZE=" << HASH_SIZE << std::endl;
     }
-    stopwatch t1, t2, t3;
+    stopwatch t1, t2, t3, t4, t5;
 
     t1.start();
-    ContentID::HashedVideo asset_video{argv[1]};
+    ContentID::Video asset_video{argv[1]};
     t1.stop();
 
     t2.start();
-    ContentID::HashedVideo compilation_video{argv[2]};
+    ContentID::Video compilation_video{argv[2]};
     t2.stop();
 
     t3.start();
-    ContentID::VideoComparison comparison{asset_video, compilation_video};
+    ContentID::HashedVideo asset_hash{asset_video};
     t3.stop();
+
+    t4.start();
+    ContentID::HashedVideo compilation_hash{compilation_video};
+    t4.stop();
+
+    t5.start();
+    ContentID::VideoComparison comparison{asset_hash, compilation_hash};
+    t5.stop();
 
     const std::string output_filename = "images/out" + std::to_string(HASH_SIZE) + ".csv";
     comparison.print_results();
@@ -34,9 +42,11 @@ int main (int argc, char** argv) {
 
     if (VERBOSE) std::cout 
         << "\nElapsed time:"
-        << "\n HashedVideo{asset}                  " << t1.elapsed_time() << " s"
-        << "\n HashedVideo{compilation}            " << t2.elapsed_time() << " s"
-        << "\n VideoComparison{asset, compilation} " << t3.elapsed_time() << " s"
+        << "\n Video (asset)                        " << t1.elapsed_time() << " s"
+        << "\n Video (compilation)                  " << t2.elapsed_time() << " s"
+        << "\n HashedVideo (asset)                  " << t3.elapsed_time() << " s"
+        << "\n HashedVideo (compilation)            " << t4.elapsed_time() << " s"
+        << "\n VideoComparison (asset, compilation) " << t5.elapsed_time() << " s"
         << "\n";
 
     return 0;
