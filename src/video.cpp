@@ -15,7 +15,7 @@ namespace {
     }
 
     void download_video(const std::string &directory, const std::string &videoid) {
-        const std::string command{"youtube-dl -f 'bestvideo[height<=144][ext=mp4]' -o '" + directory + "/%(id)s.%(ext)s' " + videoid};
+        const std::string command{"./bin/youtube-dl -f 'bestvideo[height<=144][ext=mp4]' -o '" + directory + "/%(id)s.%(ext)s' " + videoid};
         if (VERBOSE) std::cout << command << "\n";
         std::system(command.c_str());
     }
