@@ -31,7 +31,7 @@ namespace {
         return result;
     }
 
-    std::vector<bool> find_matches(
+    std::vector<bool> generate_binary_signal(
         const std::vector<double> &avg, 
         const std::vector<double> &std, 
         const double min_avg, 
@@ -44,9 +44,26 @@ namespace {
         }
         return result;
     }
+
+    ContentID::match_t find_first_match(std::vector<bool> binary_signal, size_t min_length) {
+        ContentID::match_t result{ false, 0 };
+        for (size_t i = 0; i < binary_signal.size(); ++i) {
+            if (binary_signal[i]) {
+                result.found = true;
+                result.frame = i + WINDOW_SIZE/2;
+                for (size_t j = 0; j < min_length; ++j) {
+                    if (!binary_signal[i+j]) {
+                        result.found = false;
+                        result.frame = 0;
+                        break;
+                    }
+                }
+                if (result.found) break;
+            }
+        }
+        return result;
+    }
 }
-
-
 
 ContentID::VideoComparison::VideoComparison(
     const ContentID::HashedVideo &asset, 
@@ -55,7 +72,8 @@ ContentID::VideoComparison::VideoComparison(
   : framerate{ compilation.framerate }, 
     asset_id{ asset.videoid },
     compilation_id{ compilation.videoid },
-    signal{ 0.8875 /*min avg*/, 0.07 /*max std*/ }
+    signal{ 0.8875 /*min avg*/, 0.07 /*max std*/ },
+    match{ false /*found*/, 0 /*frame*/ }
 {
     constexpr double factor = 1.0 / (HASH_SIZE * HASH_SIZE);
 
@@ -67,23 +85,35 @@ ContentID::VideoComparison::VideoComparison(
         }
         this->signal.raw.push_back(1 - factor * min_dist);
     }
-
+    
     this->signal.moving_avg = ::rolling_avg(this->signal.raw, WINDOW_SIZE);
     this->signal.moving_std = ::rolling_std(this->signal.raw, WINDOW_SIZE);
-    this->signal.binary = ::find_matches(
-        this->signal.moving_avg, 
-        this->signal.moving_std, 
-        this->signal.min_avg, 
-        this->signal.max_std
-    );
+    this->signal.binary = ::generate_binary_signal(this->signal.moving_avg, this->signal.moving_std, this->signal.min_avg, this->signal.max_std);
+    this->match = ::find_first_match(this->signal.binary, MIN_MATCH_LENGTH / framerate);
+}
 
+void ContentID::VideoComparison::print_results() {
     std::cout << "asset: " << this->asset_id << " | compilation: "<< this->compilation_id << " => ";
-    for (size_t i = 0; i < this->signal.binary.size(); ++i) {
-        if (this->signal.binary[i]) {
-            const double seconds = (i + 60) / this->framerate;
-            std::cout << "Match found: https://youtu.be/" << this->compilation_id << "?t=" << seconds << "s\n";
-            return;
-        }
+    if (this->match.found) {
+        const int seconds = match.frame / this->framerate;
+        std::cout << "Match found: https://youtu.be/" << this->compilation_id << "?t=" << seconds << "s\n";
+    } else {
+        std::cout << "No matches found\n";
     }
-    std::cout << "No matches found!\n";
+}
+
+void ContentID::VideoComparison::write_csv(std::string output) {
+    std::ofstream csv{output};
+    csv << "raw,avg,std,bin,min_avg,max_std\n"; 
+    for (size_t i = 0; i < this->signal.raw.size(); ++i) {
+        csv << this->signal.raw[i];
+        if (i > WINDOW_SIZE/2 && i < this->signal.raw.size() - WINDOW_SIZE/2) {
+            csv << "," << this->signal.moving_avg[i-WINDOW_SIZE/2]
+                << "," << this->signal.moving_std[i-WINDOW_SIZE/2]
+                << "," << this->signal.binary[i-WINDOW_SIZE/2];
+        } else {
+            csv << ",,,";
+        }
+        csv << "," << this->signal.min_avg << "," << this->signal.max_std << "\n";
+    }
 }

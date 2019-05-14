@@ -14,4 +14,5 @@
 
 #define BITS_IN_UINT 32
 #define HASH_LENGTH HASH_SIZE * HASH_SIZE / BITS_IN_UINT
-#define OUTPUT "images/out" + std::to_string(HASH_SIZE) + ".csv"
+
+#define MIN_MATCH_LENGTH 1.0 // seconds
