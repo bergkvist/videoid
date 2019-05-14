@@ -58,7 +58,7 @@ Elapsed time:
 +-------------+---------+-----------------
 ```
 
-### Example: Several comparisons
+### Example: Several comparisons/accuracy of algorithm
 ```
 $ python ./bin/run.py
 asset: ZTHsrEG5jhA | compilation: M_KWGJw6R24 => Match found: https://youtu.be/M_KWGJw6R24?t=106s
@@ -69,15 +69,17 @@ asset: ZTHsrEG5jhA | compilation: B9ypGdx5EXA => No matches found
 asset: ZTHsrEG5jhA | compilation: WLrbqsXwKz4 => Match found: https://youtu.be/WLrbqsXwKz4?t=163s
 asset: ZTHsrEG5jhA | compilation: 8b1lO5NuaEs => No matches found
 ```
+NOTE: For these videos, it correctly identifies 4 matches and 1 video for not having matches. However, it fails to recognize 2 matches (2 false negatives).
+* `B9ypGdx5EXA` - This is easy for the human eye to recognize as a match, but due to some movements/distortions, the algorithm fails. It is likely that this was filmed from another screen with a camera.
+* `8b1lO5NuaEs` - This has a big black borders, and a huge watermark. These elements combined is likely what makes the algorithm fail.
 
 ## Misc
 The algorithm uses video only (no audio). It is likely to perform poorly on single-colored backgrounds with text - so try to avoid these in your assets.
 
 ### Visualize comparison
 This requires that you have Python 3 installed with `matplotlib` and `pandas`.
-1. Run the program on any two videos. (Example: `make run`)
-2. Now a csv-file has been generated in `./images/`. Plot this by running `make plot`)
-3. A png-file with the same name should now appear in the `./images/`-folder.
+1. Run the program on any two videos. (Example: `$ make run`) This should generate a csv-file in `./images/`
+2. Plot the csv-data using `$ make plot`, and notice the image `./images/out32.png`
 
 ### Video Downloads
 Any two videos from YouTube can be chosen for comparison, by simply giving their ids to this CLI. If the videos don't exist locally, they will be downloaded and places in `~/.videos/*.mp4`. The filename will be the youtube id, and the video will be kept here in case it is needed later. Note that the `load` timings will be significantly lower the first time.
