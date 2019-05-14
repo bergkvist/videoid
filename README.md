@@ -18,13 +18,24 @@ Usage: ./bin/main.exe <asset-id> <compilation-id>
  
 NOTE: by setting the environment variable VERBOSE=true, you will get more detailed output when running the program.
 ```
-### Example ouput
+Recommendation: Use Makefile to rapidly test out some commands:
+```bash
+# Run a basic comparison where you expect a match
+make run
+make run-verbose
+
+# Run several comparisons in series
+make test  
+make test-verbose
+```
+
+### Example: input/ouput
 ```
 $ ./bin/main.exe ZTHsrEG5jhA M_KWGJw6R24
 asset: ZTHsrEG5jhA | compilation: M_KWGJw6R24 => Match found: https://youtu.be/M_KWGJw6R24?t=106s
 ```
 
-### Example verbose output
+### Example: input/verbose output
 ```
 $ VERBOSE=true ./bin/main.exe ZTHsrEG5jhA M_KWGJw6R24
 
@@ -45,6 +56,18 @@ Elapsed time:
 | compilation | hash    | 0.892378 s
 | both        | compare | 0.230802 s
 +-------------+---------+-----------------
+```
+
+### Example: Several comparisons
+```
+$ python ./bin/run.py
+asset: ZTHsrEG5jhA | compilation: M_KWGJw6R24 => Match found: https://youtu.be/M_KWGJw6R24?t=106s
+asset: ZTHsrEG5jhA | compilation: ZTHsrEG5jhA => Match found: https://youtu.be/ZTHsrEG5jhA?t=4s
+asset: ZTHsrEG5jhA | compilation: j4hnIAqyhGE => Match found: https://youtu.be/j4hnIAqyhGE?t=44s
+asset: ZTHsrEG5jhA | compilation: 9RlBXx8Pf-8 => No matches found
+asset: ZTHsrEG5jhA | compilation: B9ypGdx5EXA => No matches found
+asset: ZTHsrEG5jhA | compilation: WLrbqsXwKz4 => Match found: https://youtu.be/WLrbqsXwKz4?t=163s
+asset: ZTHsrEG5jhA | compilation: 8b1lO5NuaEs => No matches found
 ```
 
 ## Misc
