@@ -21,16 +21,19 @@ int main (int argc, char** argv) {
     t1.stop();
 
     t2.start();
-    ContentID::Video compilation_video{argv[2]};
+    ContentID::HashedVideo asset_hash{asset_video};
+    asset_video.capture.release(); // This is not needed in OpenCV 4
     t2.stop();
 
     t3.start();
-    ContentID::HashedVideo asset_hash{asset_video};
+    ContentID::Video compilation_video{argv[2]};
     t3.stop();
 
     t4.start();
     ContentID::HashedVideo compilation_hash{compilation_video};
+    compilation_video.capture.release();
     t4.stop();
+
 
     t5.start();
     ContentID::VideoComparison comparison{asset_hash, compilation_hash};
@@ -42,11 +45,14 @@ int main (int argc, char** argv) {
 
     if (VERBOSE) std::cout 
         << "\nElapsed time:"
-        << "\n Video (asset)                        " << t1.elapsed_time() << " s"
-        << "\n Video (compilation)                  " << t2.elapsed_time() << " s"
-        << "\n HashedVideo (asset)                  " << t3.elapsed_time() << " s"
-        << "\n HashedVideo (compilation)            " << t4.elapsed_time() << " s"
-        << "\n VideoComparison (asset, compilation) " << t5.elapsed_time() << " s"
+        << "\n+-------------+---------+-----------------"
+        << "\n| Resource    | Action  | Time"
+        << "\n+-------------+---------+-----------------"
+        << "\n| asset       | load    | " << t1.elapsed_time() << " s"
+        << "\n| asset       | hash    | " << t2.elapsed_time() << " s"
+        << "\n| compilation | load    | " << t3.elapsed_time() << " s"
+        << "\n| compilation | hash    | " << t4.elapsed_time() << " s"
+        << "\n| both        | compare | " << t5.elapsed_time() << " s"
         << "\n";
 
     return 0;
