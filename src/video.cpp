@@ -32,4 +32,7 @@ ContentID::Video::Video(std::string videoid) : videoid{videoid} {
     const std::string directory = ::video_directory();
     std::string path = ::download_video_if_not_exists(directory, videoid);
     this->capture = cv::VideoCapture{path};
+    if (!this->capture.isOpened()) {
+        throw std::runtime_error{"OpenCV is unable to open " + path};
+    }
 }
