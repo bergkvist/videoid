@@ -14,7 +14,7 @@ int main (int argc, char** argv) {
         std::cout << "\n"
             << "OpenCV version   : " << CV_VERSION << "\n"
             << "HASH_SIZE        : " << HASH_SIZE
-            << "\t(This is means the images will be resized to "<< HASH_SIZE << "x" << HASH_SIZE <<") \n"
+            << "\t(This means the images/frames will be resized to "<< HASH_SIZE << "x" << HASH_SIZE <<") \n"
             << "WINDOW_SIZE      : " << WINDOW_SIZE
             << "\t(This is used for computing rolling average and rolling std)\n"
             << "MIN_MATCH_LENGTH : " << MIN_MATCH_LENGTH

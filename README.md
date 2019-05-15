@@ -29,7 +29,7 @@ asset: ZTHsrEG5jhA | compilation: M_KWGJw6R24 => Match found: https://youtu.be/M
 $ VERBOSE=true ./bin/main.exe ZTHsrEG5jhA M_KWGJw6R24
 
 OpenCV version   : 4.1.0
-HASH_SIZE        : 32   (This is means the images will be resized to 32x32) 
+HASH_SIZE        : 32   (This means the images/frames will be resized to 32x32) 
 WINDOW_SIZE      : 120  (This is used for computing rolling average and rolling std)
 MIN_MATCH_LENGTH : 1    (in seconds. A match must last longer than this)
 
