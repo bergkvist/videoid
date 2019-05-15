@@ -11,8 +11,14 @@ int main (int argc, char** argv) {
     }
 
     if (VERBOSE) {
-        std::cout << "OpenCV version: " << CV_VERSION << std::endl;
-        std::cout << "HASH_SIZE=" << HASH_SIZE << std::endl;
+        std::cout << "\n"
+            << "OpenCV version   : " << CV_VERSION << "\n"
+            << "HASH_SIZE        : " << HASH_SIZE
+            << "\t(This is means the images will be resized to "<< HASH_SIZE << "x" << HASH_SIZE <<") \n"
+            << "WINDOW_SIZE      : " << WINDOW_SIZE
+            << "\t(This is used for computing rolling average and rolling std)\n"
+            << "MIN_MATCH_LENGTH : " << MIN_MATCH_LENGTH
+            << "\t(in seconds. A match must last longer than this)\n\n";
     }
     stopwatch t1, t2, t3, t4, t5;
 
