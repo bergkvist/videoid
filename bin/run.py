@@ -12,4 +12,4 @@ video_ids = [
 ]
 
 for video_id in video_ids:
-    os.system("./main.exe " + asset_id + " " + video_id)
+    os.system("./bin/main.exe " + asset_id + " " + video_id)

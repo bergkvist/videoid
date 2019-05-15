@@ -31,3 +31,9 @@ plot: images/out32.csv
 
 plot-watch: images/out32.csv
 	echo "images/plot.py" | entr -c -s 'make plot'
+
+test: $(TARGET)
+	python ./bin/run.py
+
+test-verbose: $(TARGET)
+	VERBOSE=1 python ./bin/run.py

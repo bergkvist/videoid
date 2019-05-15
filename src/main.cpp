@@ -59,6 +59,7 @@ int main (int argc, char** argv) {
         << "\n| compilation | load    | " << t3.elapsed_time() << " s"
         << "\n| compilation | hash    | " << t4.elapsed_time() << " s"
         << "\n| both        | compare | " << t5.elapsed_time() << " s"
+        << "\n+-------------+---------+-----------------"
         << "\n";
 
     return 0;
