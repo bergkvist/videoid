@@ -101,15 +101,25 @@ ContentID::VideoComparison::VideoComparison(
     signal{ 0.8875 /*min_avg*/, 0.07 /*max_std*/ }
 {
     constexpr double factor = 1.0 / (HASH_SIZE * HASH_SIZE);
+    const int asset_length = asset.frames.size();
+    const int compilation_length = compilation.frames.size();
+    this->signal.raw.resize(compilation_length);
+    
+    int * min_hamming_distance = new int[compilation_length];
+    std::fill_n(min_hamming_distance, compilation_length, HASH_SIZE * HASH_SIZE);
 
-    for (auto compilation_frame : compilation.frames) {
-        int min_dist = compilation_frame.hamming_distance(asset.frames[0]);
-        for (auto asset_frame : asset.frames) {
-            int dist = compilation_frame.hamming_distance(asset_frame);
-            if (dist < min_dist) min_dist = dist;
+    #pragma omp parallel for reduction(min: min_hamming_distance[:compilation_length])
+    for (int i = 0; i < compilation_length; ++i) {
+        for (int j = 0; j < asset_length; ++j) {
+            const int distance = compilation.frames[i].hamming_distance(asset.frames[j]);
+            if (distance < min_hamming_distance[i]) min_hamming_distance[i] = distance;
         }
-        this->signal.raw.push_back(1 - factor * min_dist);
     }
+
+    #pragma omp parallel for
+    for (int i = 0; i < compilation_length; ++i)
+        this->signal.raw[i] = 1 - factor * min_hamming_distance[i];
+    delete [] min_hamming_distance;
     
     this->signal.moving_avg = ::rolling_avg(this->signal.raw, WINDOW_SIZE);
     this->signal.moving_std = ::rolling_std(this->signal.raw, WINDOW_SIZE);
