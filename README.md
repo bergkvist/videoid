@@ -29,8 +29,9 @@ NOTE: by setting the environment variable VERBOSE=1, you will get more detailed 
 ```
 
 ## Documentation
-### [Troubleshooting](docs/0_TROUBLESHOOTING.md)
 ### [Usage and examples](docs/1_EXAMPLES.md)
-### [How it works (Theory)](docs/2_THEORY.md)
+### [Theory (How it works)](docs/2_THEORY.md)
 ### [Benchmarks](docs/3_BENCHMARKS.md)
 ### [Analysis of Results](docs/4_RESULTS.md)
+### [References](docs/5_REFERENCES.md)
+### [Troubleshooting](docs/0_TROUBLESHOOTING.md)
