@@ -2,7 +2,7 @@
 [Back to frontpage](../README.md)
 
 # Benchmarks
-
+NOTE: You might wonder what the `load`-action times are. This is the time spent checking if the video exists on disk, and downloading it if it doesn't. The reason it is practically 0 below, is that the videos already exist on disk.
 ### Sequential (without OpenMP)
 ```
 $ VERBOSE=1 ./bin/main.exe ZTHsrEG5jhA M_KWGJw6R24
@@ -52,16 +52,19 @@ Elapsed time:
 
 [Click here to see where the parallelization with OpenMP was added](https://github.com/bergkvist/videoid/blob/366589bdf0c099e8725ec96734a3f7bfa1b2ec02/src/video_comparison.cpp#L116-L130)
 
-NOTE: Using OpenMP, with 4 cores - we can see that the video comparison is indeed around 4 times faster. Why do we care about improving the comparison speed when it is already faster than the hashing?
+NOTE: Using OpenMP, with 4 cores (Intel Core i7-6600U) - we can see that the video comparison is indeed around 4 times faster. Why do we care about improving the comparison speed when it is already a lot faster than the hashing?
 
 The answer is one word: **Scalability**:
 
-| # of compilations   | # of assets | # of hashes | # of comparisons |
-|---------------------|-------------|-------------|------------------|
-| 1                   | 1           | 2           | 1                |
-| 10                  | 1           | 11          | 10               |
-| 10                  | 10          | 20          | 100              |
-| 100                 | 100         | 200         | 10 000           |
-| 1000                | 1000        | 2000        | 1 000 000        |
+| # of compilations   | # of assets | # of hashes | # of comparisons | comparisons per hash |
+|---------------------|-------------|-------------|------------------|----------------------|
+| 1                   | 1           | 2           | 1                | 0.5                  |
+| 10                  | 1           | 11          | 10               | 0.91                 |
+| 10                  | 10          | 20          | 100              | 5                    |
+| 100                 | 100         | 200         | 10 000           | 50                   |
+| 1 000               | 1 000       | 2 000       | 1 000 000        | 500                  |
 
 Notice that as we get more assets, and more compilations, the number of comparisons is what increases the most quickly (assumning we only hash each video once).
+
+#### But still, it would be useful if we could improve the speed of the hashing, right?
+The problem here, is that around 80% of the time spent on hashing a single frame, is actually spent on reading it from disk. An attempt at parallelizing this using `#pragma omp parallel for ordered` had no noticable impact on the hashing time. The sequential version is already so optimized that there is little room for improvement, due to memory bandwidth limitations.
