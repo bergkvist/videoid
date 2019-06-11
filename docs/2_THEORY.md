@@ -16,8 +16,9 @@ Some basic concepts/"big words" will be used as terminology in this project:
  - Of course a video can also have audio, but this will be ignored in this project
 
 ### "Perceptual Hash" vs "Cryptographic Hash"
- - Perceptual hash: A small change in input causes a small change in output. Good for fuzzy matching (this is what we need for video comparison)
  - Cryptographic hash: A small change in input causes a huge and unpredictable change in output. Good for exact matching.
+ - Perceptual hash: A small change in input causes a small change in output. Good for fuzzy matching (this is what will be used for video comparison)
+
 
 ### A Perceptual Image Hash
 <img src="perceptual_image_hash.png" width="400px" />
