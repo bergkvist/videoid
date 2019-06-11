@@ -1,5 +1,4 @@
-![](logo.png)
-[Back to frontpage](../README.md)
+[![](logo.png)](../README.md)
 
 # Results and accuracy
 

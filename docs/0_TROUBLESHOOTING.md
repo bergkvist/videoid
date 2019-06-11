@@ -1,5 +1,4 @@
-![](logo.png)
-[Back to frontpage](../README.md)
+[![](logo.png)](../README.md)
 
 # Troubleshooting
 If you are having trouble compiling, make sure you have installed all required dependencies.

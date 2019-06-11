@@ -1,5 +1,4 @@
-![](logo.png)
-[Back to frontpage](../README.md)
+[![](logo.png)](../README.md)
 
 # Benchmarks
 NOTE: You might wonder what the `load`-action times are. This is the time spent checking if the video exists on disk, and downloading it if it doesn't. The reason it is practically 0 below, is that the videos already exist on disk.
