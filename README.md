@@ -3,9 +3,9 @@
 # bergkvist/videoid
 Let's say you own the exclusive license to a video clip (an *asset*) on YouTube.
 
-Instead of manually looking through videos (*compilations*) to find out if it contains your *asset*, you wish this process could be automated.
+Instead of manually looking through videos (*compilations*) to find out if each of them contains your *asset*, you wish this process could be automated.
 
-If that is the case, you are in luck. videoid is written in C++, utilizing OpenCV for video processing, and OpenMP for multithreaded performance.
+If that's the case, you're in luck. VideoID can discover *assets* in *compilations* without human intervention. It is written in C++, utilizing OpenCV for image/video processing, and OpenMP for multithreaded performance.
 
 
 
