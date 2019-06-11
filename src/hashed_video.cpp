@@ -5,7 +5,17 @@ ContentID::HashedVideo::HashedVideo(ContentID::Video video) :
     videoid{video.videoid},
     framerate{video.capture.get(cv::CAP_PROP_FPS)}
 {
-    cv::Mat frame;
-    while (video.capture.read(frame))
-        this->frames.push_back(ContentID::HashedFrame{frame});
+    const int frame_count = video.capture.get(cv::CAP_PROP_FRAME_COUNT);
+    this->frames.resize(frame_count);
+
+    #pragma omp parallel for ordered
+    for (int i = 0; i < frame_count; ++i) {
+        // benchmark: 0.000597313 s
+        cv::Mat frame;
+        // benchmark: 1.5391 s
+        #pragma omp ordered
+        video.capture.read(frame);
+        // benchmark: 0.3346 s
+        this->frames[i] = ContentID::HashedFrame{frame};
+    }
 }

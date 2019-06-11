@@ -21,7 +21,7 @@ int main (int argc, char** argv) {
             << "MIN_MATCH_LENGTH : " << MIN_MATCH_LENGTH
             << "\t(in seconds. A match must last longer than this)\n\n";
     }
-    stopwatch t1, t2, t3, t4, t5;
+    Stopwatch t1, t2, t3, t4, t5;
 
     t1.start();
     ContentID::Video asset_video{argv[1]};
@@ -29,7 +29,9 @@ int main (int argc, char** argv) {
 
     t2.start();
     ContentID::HashedVideo asset_hash{asset_video};
-    asset_video.capture.release(); // This is not needed in OpenCV 4
+    // OpenCV 3 only allows one stream to be open at a time, so we have to release.
+    // NOTE: This is not needed when using OpenCV 4
+    asset_video.capture.release();
     t2.stop();
 
     t3.start();

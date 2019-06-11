@@ -12,7 +12,8 @@ namespace ContentID {
             unsigned int data[DATA_LENGTH];
         
         public:
+            HashedFrame();
             HashedFrame(cv::Mat frame);
-            int hamming_distance(const ContentID::HashedFrame &h);
+            int hamming_distance(const ContentID::HashedFrame &h) const;
     };
 }
