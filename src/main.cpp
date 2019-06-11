@@ -13,6 +13,7 @@ int main (int argc, char** argv) {
     if (VERBOSE) {
         std::cout << "\n"
             << "OpenCV version   : " << CV_VERSION << "\n"
+            << "OpenMP version   : " << _OPENMP << "\n"
             << "HASH_SIZE        : " << HASH_SIZE
             << "\t(This means the images/frames will be resized to "<< HASH_SIZE << "x" << HASH_SIZE <<") \n"
             << "WINDOW_SIZE      : " << WINDOW_SIZE

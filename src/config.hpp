@@ -14,5 +14,9 @@
 #define WINDOW_SIZE 180
 #endif
 
+#ifndef _OPENMP
+#define _OPENMP "NOT DETECTED!"
+#endif
+
 // What is the minium length requirement for a match?
 #define MIN_MATCH_LENGTH 1.0 // seconds

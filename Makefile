@@ -9,10 +9,10 @@ TARGET := bin/main.exe
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
-	mkdir -p ./bin/ && $(CC) -o $(TARGET) $(LIBS) $(OBJECTS)
+	mkdir -p ./bin/ && $(CC) -o $(TARGET) $(LIBS) $(OBJECTS) -fopenmp
 
 build/%.o: src/%.cpp
-	mkdir -p ./build/ && $(CC) $(CFLAGS) -c -o $@ $<
+	mkdir -p ./build/ && $(CC) $(CFLAGS) -c -o $@ $< -fopenmp
 
 clean:
 	rm -r ./build
