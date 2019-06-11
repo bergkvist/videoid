@@ -56,13 +56,13 @@ NOTE: Using OpenMP, with 4 cores (Intel Core i7-6600U) - we can see that the vid
 
 The answer is one word: **Scalability**:
 
-| # of compilations   | # of assets | # of hashes | # of comparisons |
-|---------------------|-------------|-------------|------------------|
-| 1                   | 1           | 2           | 1                |
-| 10                  | 1           | 11          | 10               |
-| 10                  | 10          | 20          | 100              |
-| 100                 | 100         | 200         | 10 000           |
-| 1000                | 1000        | 2000        | 1 000 000        |
+| # of compilations   | # of assets | # of hashes | # of comparisons | comparisons per hash |
+|---------------------|-------------|-------------|------------------|----------------------|
+| 1                   | 1           | 2           | 1                | 0.5                  |
+| 10                  | 1           | 11          | 10               | 0.91                 |
+| 10                  | 10          | 20          | 100              | 5                    |
+| 100                 | 100         | 200         | 10 000           | 50                   |
+| 1 000               | 1 000       | 2 000       | 1 000 000        | 500                  |
 
 Notice that as we get more assets, and more compilations, the number of comparisons is what increases the most quickly (assumning we only hash each video once).
 
