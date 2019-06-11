@@ -77,9 +77,17 @@ void ContentID::VideoComparison::print_results() {
 
 void ContentID::VideoComparison::write_csv(std::string output) {
     std::ofstream csv{output};
-    csv << "raw,avg,std,bin,min_avg,max_std\n"; 
+    std::ofstream cnf{output + ".ini"};
+
+    cnf << "[metadata]\n"
+        << "framerate = " << this->framerate << "\n"
+        << "asset_id = " << this->asset_id << "\n"
+        << "compilation_id = " << this->compilation_id << "\n";
+
+    csv << "frame,raw,avg,std,bin,min_avg,max_std\n"; 
     for (size_t i = 0; i < this->signal.raw.size(); ++i) {
-        csv << this->signal.raw[i];
+        csv << i 
+            << "," << this->signal.raw[i];
         if (i > WINDOW_SIZE/2 && i < this->signal.raw.size() - WINDOW_SIZE/2) {
             csv << "," << this->signal.moving_avg[i-WINDOW_SIZE/2]
                 << "," << this->signal.moving_std[i-WINDOW_SIZE/2]
