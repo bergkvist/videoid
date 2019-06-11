@@ -3,7 +3,7 @@
 
 # Benchmarks
 
-### Example: input/verbose output
+### Sequential (without OpenMP)
 ```
 $ VERBOSE=1 ./bin/main.exe ZTHsrEG5jhA M_KWGJw6R24
 
@@ -26,7 +26,7 @@ Elapsed time:
 +-------------+---------+-----------------
 ```
 
-With OpenMP
+### Parallelized (with OpenMP)
 ```
 ./bin/main.exe ZTHsrEG5jhA M_KWGJw6R24
 
@@ -49,6 +49,9 @@ Elapsed time:
 | both        | compare | 0.0615238 s
 +-------------+---------+-----------------
 ```
+
+[Click here to see where the parallelization with OpenMP was added](https://github.com/bergkvist/videoid/blob/366589bdf0c099e8725ec96734a3f7bfa1b2ec02/src/video_comparison.cpp#L116-L130)
+
 NOTE: Using OpenMP, with 4 cores - we can see that the video comparison is indeed around 4 times faster. Why do we care about improving the comparison speed when it is already faster than the hashing?
 
 The answer is one word: **Scalability**:
@@ -59,6 +62,6 @@ The answer is one word: **Scalability**:
 | 10                  | 1           | 11          | 10               |
 | 10                  | 10          | 20          | 100              |
 | 100                 | 100         | 200         | 10 000           |
-| 1000                | 1000        | 2000        | 1 000 000          |
+| 1000                | 1000        | 2000        | 1 000 000        |
 
 Notice that as we get more assets, and more compilations, the number of comparisons is what increases the most quickly (assumning we only hash each video once).
