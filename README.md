@@ -35,6 +35,9 @@ $ ./bin/main.exe ZTHsrEG5jhA M_KWGJw6R24
 asset: ZTHsrEG5jhA | compilation: M_KWGJw6R24 => Match found: https://youtu.be/M_KWGJw6R24?t=106s
 ```
 
+### Visualization of input/output
+![plot](docs/out32.png)
+
 ### Example: input/verbose output
 ```
 $ VERBOSE=true ./bin/main.exe ZTHsrEG5jhA M_KWGJw6R24
@@ -81,6 +84,19 @@ Elapsed time:
 | both        | compare | 0.0615238 s
 +-------------+---------+-----------------
 ```
+NOTE: Using OpenMP, with 4 cores - we can see that the video comparison is indeed around 4 times faster. Why do we care about improving the comparison speed when it is already faster than the hashing?
+
+The answer is one word: **Scalability**:
+
+| # of compilations   | # of assets | # of hashes | # of comparisons |
+|---------------------|-------------|-------------|------------------|
+| 1                   | 1           | 2           | 1                |
+| 10                  | 1           | 11          | 10               |
+| 10                  | 10          | 20          | 100              |
+| 100                 | 100         | 200         | 10 000           |
+| 1000                | 1000        | 2000        | 1 000 000          |
+
+Notice that as we get more assets, and more compilations, the number of comparisons is what increases the most quickly (assumning we only hash each video once).
 
 ### Example: Several comparisons/accuracy of algorithm
 ```
@@ -94,14 +110,14 @@ asset: ZTHsrEG5jhA | compilation: WLrbqsXwKz4 => Match found: https://youtu.be/W
 asset: ZTHsrEG5jhA | compilation: 8b1lO5NuaEs => No matches found
 ```
 NOTE: For these videos, it correctly identifies 4 matches and 1 video for not having matches. However, it fails to recognize 2 matches (2 false negatives).
-* `B9ypGdx5EXA` - This is easy for the human eye to recognize as a match, but due to some movements/distortions, the algorithm fails. It is likely that this was filmed from another screen with a camera.
+* `B9ypGdx5EXA` - This is easy for the human eye to recognize as a match, but due to some movements/distortions, the algorithm fails. It is likely that the video was being played at a screen, and then filmed with a camera with slight movements.
 * `8b1lO5NuaEs` - This has a big black borders, and a huge watermark. These elements combined is likely what makes the algorithm fail.
 
 ## Misc
 The algorithm uses video only (no audio). It is likely to perform poorly on single-colored backgrounds with text - so try to avoid these in your assets.
 
 ### Visualize comparison
-This requires that you have Python 3 installed with `matplotlib` and `pandas`.
+This requires that you have Python 3 installed with `matplotlib`, `pandas` and `configparser`.
 1. Run the program on any two videos. (Example: `$ make run`) This should generate a csv-file in `./images/`
 2. Plot the csv-data using `$ make plot`, and notice the image `./images/out32.png`
 
