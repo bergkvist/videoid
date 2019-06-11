@@ -4,7 +4,7 @@
 # References
 
 ### YouTube ContentID
-A similar system to videoid already exists for, and is owned by YouTube. This is called ContentID. Why then, create another system to do the same thing?
+A similar system to VideoID already exists for, and is owned by YouTube. This is called ContentID. Why then, create another system to do the same thing?
 
 There are several problems with ContentID. 
  - It is proprietary and closed source. 
