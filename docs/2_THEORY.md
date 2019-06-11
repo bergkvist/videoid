@@ -2,7 +2,8 @@
 [Back to frontpage](../README.md)
 
 # Theory
-The algorithm uses video only (no audio). It is likely to perform poorly on single-colored backgrounds with text - so try to avoid these in your assets.
+The algorithm uses video only (no audio).
+
 ## Terminology
 Some basic concepts/"big words" will be used as terminology in this project:
  - ***asset***: A video that you own. Your motivation for using this project is that you wish to find your *asset* within other videos (*compilations*)
