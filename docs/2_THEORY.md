@@ -38,7 +38,7 @@ We have a sequence of numbers between 0 and 1, and we want to find potential mat
 
 #### Problems
  - The resulting sequence will be quite «noisy» due to the nature of the comparisons.
- - Anything lasting less than 1-2 seconds is unlikely to be a match, so we don’t want this to register as a discovery. (Consider a both the asset and compilation having a single entirely black frame)
+ - Anything lasting less than 1-2 seconds is unlikely to be a match, so we don’t want this to register as a discovery. (Consider both the asset and compilation having a single entirely black frame)
  
 #### To solve these problems, two new signals will be computed
 - The ***rolling average*** of the sequence with an empiric period.
