@@ -2,7 +2,7 @@
 #include <opencv2/opencv.hpp>
 #include "config.hpp"
 
-namespace ContentID {
+namespace VideoID {
     constexpr int PIXEL_COUNT = HASH_SIZE * HASH_SIZE;
     constexpr int PIXELS_PER_UINT = 8 * sizeof(unsigned int);
     constexpr int DATA_LENGTH = PIXEL_COUNT / PIXELS_PER_UINT;
@@ -14,6 +14,6 @@ namespace ContentID {
         public:
             HashedFrame();
             HashedFrame(cv::Mat frame);
-            int hamming_distance(const ContentID::HashedFrame &h) const;
+            int hamming_distance(const VideoID::HashedFrame &h) const;
     };
 }

@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-namespace ContentID {
+namespace VideoID {
     struct signal_t {
         double min_avg;
         double max_std;
@@ -20,9 +20,9 @@ namespace ContentID {
             double framerate;
             std::string asset_id;
             std::string compilation_id;
-            ContentID::signal_t signal;
-            ContentID::match_t match;
-            VideoComparison(const ContentID::HashedVideo &asset, const ContentID::HashedVideo &compilation);
+            VideoID::signal_t signal;
+            VideoID::match_t match;
+            VideoComparison(const VideoID::HashedVideo &asset, const VideoID::HashedVideo &compilation);
             void print_results();
             void write_csv(std::string output);
     };

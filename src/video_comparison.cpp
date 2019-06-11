@@ -45,8 +45,8 @@ namespace {
         return result;
     }
 
-    ContentID::match_t find_first_match(std::vector<bool> binary_signal, size_t min_length) {
-        ContentID::match_t result{ false, 0 };
+    VideoID::match_t find_first_match(std::vector<bool> binary_signal, size_t min_length) {
+        VideoID::match_t result{ false, 0 };
         for (size_t i = 0; i < binary_signal.size(); ++i) {
             if (binary_signal[i]) {
                 result.found = true;
@@ -65,7 +65,7 @@ namespace {
     }
 }
 
-void ContentID::VideoComparison::print_results() {
+void VideoID::VideoComparison::print_results() {
     std::cout << "asset: " << this->asset_id << " | compilation: "<< this->compilation_id << " => ";
     if (this->match.found) {
         const int seconds = match.frame / this->framerate;
@@ -75,7 +75,7 @@ void ContentID::VideoComparison::print_results() {
     }
 }
 
-void ContentID::VideoComparison::write_csv(std::string output) {
+void VideoID::VideoComparison::write_csv(std::string output) {
     std::ofstream csv{output};
     std::ofstream cnf{output + ".ini"};
 
@@ -99,9 +99,9 @@ void ContentID::VideoComparison::write_csv(std::string output) {
     }
 }
 
-ContentID::VideoComparison::VideoComparison(
-    const ContentID::HashedVideo &asset, 
-    const ContentID::HashedVideo &compilation
+VideoID::VideoComparison::VideoComparison(
+    const VideoID::HashedVideo &asset, 
+    const VideoID::HashedVideo &compilation
 ) 
   : framerate{ compilation.framerate }, 
     asset_id{ asset.videoid },

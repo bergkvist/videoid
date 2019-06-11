@@ -24,7 +24,7 @@ $ ./bin/main.exe ZTHsrEG5jhA M_KWGJw6R24
 Usage: videoid <asset-id> <compilation-id>
   <asset-id>:       The id of a YouTube video that you own
   <compilation-id>: The id of a YouTube video that you want to check
- 
+
 NOTE: by setting the environment variable VERBOSE=1, you will get more detailed output when running the program.
 ```
 

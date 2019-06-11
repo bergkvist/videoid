@@ -3,12 +3,12 @@
 #include <string>
 #include <vector>
 
-namespace ContentID {
+namespace VideoID {
     class HashedVideo {
         public:
             std::string videoid{"__INVALID__"};
             double framerate{-1};
-            std::vector<ContentID::HashedFrame> frames;
-            HashedVideo(ContentID::Video video);
+            std::vector<VideoID::HashedFrame> frames;
+            HashedVideo(VideoID::Video video);
     };
 }

@@ -11,7 +11,7 @@ namespace {
     }
 }
 
-int ContentID::HashedFrame::hamming_distance(const HashedFrame &h) const {
+int VideoID::HashedFrame::hamming_distance(const HashedFrame &h) const {
     int count = 0;
     for (size_t i = 0; i < DATA_LENGTH; ++i) {
         count += ::number_of_set_bits(this->data[i] ^ h.data[i]);
@@ -19,8 +19,8 @@ int ContentID::HashedFrame::hamming_distance(const HashedFrame &h) const {
     return count;
 }
 
-ContentID::HashedFrame::HashedFrame() { }
-ContentID::HashedFrame::HashedFrame(cv::Mat frame) {
+VideoID::HashedFrame::HashedFrame() { }
+VideoID::HashedFrame::HashedFrame(cv::Mat frame) {
     /* Benchmark (usage): 0.953 s */
     const cv::Size hash_size(HASH_SIZE, HASH_SIZE);
     cv::resize(frame, frame, hash_size);

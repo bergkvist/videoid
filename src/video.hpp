@@ -2,7 +2,7 @@
 #include <string>
 #include "config.hpp"
 
-namespace ContentID {
+namespace VideoID {
     class Video {
         public:
             std::string videoid{"__INVALID__"};

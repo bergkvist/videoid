@@ -24,28 +24,28 @@ int main (int argc, char** argv) {
     Stopwatch t1, t2, t3, t4, t5;
 
     t1.start();
-    ContentID::Video asset_video{argv[1]};
+    VideoID::Video asset_video{argv[1]};
     t1.stop();
 
     t2.start();
-    ContentID::HashedVideo asset_hash{asset_video};
+    VideoID::HashedVideo asset_hash{asset_video};
     // OpenCV 3 only allows one stream to be open at a time, so we have to release.
     // NOTE: This is not needed when using OpenCV 4
     asset_video.capture.release();
     t2.stop();
 
     t3.start();
-    ContentID::Video compilation_video{argv[2]};
+    VideoID::Video compilation_video{argv[2]};
     t3.stop();
 
     t4.start();
-    ContentID::HashedVideo compilation_hash{compilation_video};
+    VideoID::HashedVideo compilation_hash{compilation_video};
     compilation_video.capture.release();
     t4.stop();
 
 
     t5.start();
-    ContentID::VideoComparison comparison{asset_hash, compilation_hash};
+    VideoID::VideoComparison comparison{asset_hash, compilation_hash};
     t5.stop();
 
     const std::string output_filename = "images/out" + std::to_string(HASH_SIZE) + ".csv";
