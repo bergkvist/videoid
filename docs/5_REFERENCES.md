@@ -2,10 +2,10 @@
 
 # References
 
-### YouTube ContentID
-A similar system to VideoID already exists for, and is owned by YouTube. This is called ContentID. Why then, create another system to do the same thing?
+### Content ID (by Google)
+A similar system to VideoID already exists for YouTube, and is owned by Google. This is called Content ID. Why then, create another system to do the same thing?
 
-There are several problems with ContentID. 
+There are several problems with Content ID. 
  - It is proprietary and closed source. 
  - Its use is very limited (it can only be used automatically, and no manual control is given).
  - Its use will have side effects/it is proactive. If a match is detected, a claim will automatically be placed on the video.

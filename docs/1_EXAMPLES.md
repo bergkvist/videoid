@@ -2,7 +2,7 @@
 
 # Usage and Examples
 ### Requirements
- - `opencv4` (or alternatively `opencv3`, but then you will need to change the `OPENCV`-variable in the `Makefile` from `opencv4` to `opencv`)
+ - `opencv4` or `opencv3` (both are supported)
  - `openmp`
 
 ### Using make
