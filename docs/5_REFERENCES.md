@@ -23,6 +23,6 @@ youtube-dl is a command-line program to download videos from YouTube (although o
 
 You can see [HERE](https://github.com/bergkvist/videoid/blob/17d453f21f20e6f7aa9a5ed244f6fd1c8671db3e/src/video.cpp#L18) where it is used in the code.
 
-# Hamming weight/popcount
+### Hamming weight/popcount
 [THIS CODE](https://github.com/bergkvist/videoid/blob/17d453f21f20e6f7aa9a5ed244f6fd1c8671db3e/src/hashed_frame.cpp#L6-L11) for counting the number of set bits in a 32 bit integer was copied from [THIS ANSWER](https://stackoverflow.com/a/109025) on StackOverflow
 
