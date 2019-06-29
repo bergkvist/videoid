@@ -17,3 +17,8 @@ This means the optimal strategy would be to only place claims on videos with mor
 
 ### pHash (https://www.phash.org/)
 The image hashing algorithm used in this project is inspired by the algorithm used in the "pHash" project for perceptual image hashing.
+
+### youtube-dl (https://ytdl-org.github.io/youtube-dl/index.html)
+youtube-dl is a command-line program to download videos from YouTube (although other sites are also supported). The binary of this CLI is put in the bin folder of the project. It is used to download a video when it does not already exist locally.
+
+You can see [HERE](https://github.com/bergkvist/videoid/blob/17d453f21f20e6f7aa9a5ed244f6fd1c8671db3e/src/video.cpp#L18) where it is used in the code.
